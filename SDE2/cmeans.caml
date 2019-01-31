@@ -1,0 +1,428 @@
+
+(**
+3.1 distanceR2
+
+Prototype:
+distanceR2(v1,v2)
+Inputs: vectors v1 and v2
+Returned Value: Distance (squared) between 2 vectors of arbitrary (but same)
+dimension
+Side Effects: none
+Signature: val distanceR2 : float list * float list -> float = <fun>
+Notes:
+A necessary capability is, given a vector, to be able to find the closest
+vector in another set of vectors.
+The distance between any two vectors is computed by forming the difference vector
+and then taking the square root of the inner product of this difference vector
+with itself. It is also the square root of the sum of the squared elements of the
+difference vector. However, since we are interested in minimum distances
+(which correspond to minima of distances squared), we leave out the square root computation.
+*)
+
+let rec distanceR2(v1,v2) =
+	match (v1,v2) with 
+	|([],[]) -> 0.0
+	|(_,[]) -> 0.0
+	|([],_) -> 0.0
+	|(v1Head::v1Tail, v2Head::v2Tail) -> ((v1Head-.v2Head) ** 2.0) +. distanceR2(v1Tail,v2Tail);;
+
+(*---------------------------------------------------------------------------------------------------------------------------------------------------------------*)
+
+(**
+3.2 distanceSqAllMeans
+
+Prototype:
+distanceSqAllMeans(v,vset)
+Inputs: a vector and a set of vectors (represented as lists).
+Returned Value: a vector of the distances from v to each element of vset.
+Side Effects: none
+Signature: val distanceSqAllMeans : float list * float list list -> float list = <fun>
+Notes: The objective is to take a single vector, v, and a set of vectors (to be the
+current means in list-of-lists form) and compute the distance squared from v to each
+of the vectors in the given set. The result is returned as a list of squared distances.
+*)
+
+let rec distanceSqAllMeans(v,vset) = 
+	match vset with
+	|[] -> []
+	|(vsetHead::vsetTail) -> distanceR2(v,vsetHead) :: distanceSqAllMeans(v,vsetTail);;
+	
+(*---------------------------------------------------------------------------------------------------------------------------------------------------------------*)
+
+
+(* 
+Helper function for 3.3 
+
+This function finds the index of the minimum number in a list 
+**)
+
+let rec findMin(min,i,count,l) = 
+	match l with
+	|[] -> i
+	|(head::tail) -> if(head < min) then findMin(head,count+1,count+1,tail)
+					 else findMin(min,i,count+1,tail);;
+
+(*---------------------------------------------------------------------------------------------------------------------------------------------------------------*)
+	
+(**
+3.3 listMinPos
+
+Prototype:
+listMinPos (alist)
+Inputs: alist
+Returned Value: position (0-based indexing) of the minimum in the list
+Side Effects: none
+Signature: val listMinPos : ’a list -> int = <fun>
+Notes:
+*)
+
+let listMinPos(alist) = 
+	match alist with
+	|[] -> -1
+	|(head::[]) -> 0
+	|(head::tail) -> findMin(head,0,0,tail);;
+	
+(*---------------------------------------------------------------------------------------------------------------------------------------------------------------*)
+
+(**
+3.4 elsum
+
+Prototype:
+elsum(l1,l2)
+Inputs: lists l1 and l2
+Returned Value: vector addition of l1 and l2
+Side Effects: none
+Signature: val elsum : float list * float list -> float list = <fun>
+Notes:
+*)
+
+let rec elsum(l1,l2) = 
+	match (l1,l2) with
+	|([],[]) -> []
+	|(_,[]) -> l1
+	|([],_) -> l2
+	|(l1Head::l1Tail,l2Head::l2Tail) -> (l1Head +. l2Head) :: elsum(l1Tail,l2Tail);;
+	
+(*---------------------------------------------------------------------------------------------------------------------------------------------------------------*)
+
+(**
+3.5 scaleList
+
+Prototype:
+scaleList(l1,scale)
+Inputs: list l1, scale factor
+Returned Value: l1 with each element divided by scale
+Side Effects: none
+Signature: val scaleList : float list * int -> float list = <fun>
+Notes: For use in forming next set of means. Must handle empty lists and division by zero.
+*)
+
+let rec scaleList(l1,scale) = 
+	match l1 with
+	|[] -> []
+	|(head::tail) -> if(scale = 0) then l1
+					 else (head/.(float_of_int scale)) :: scaleList(tail, scale);;
+
+(*---------------------------------------------------------------------------------------------------------------------------------------------------------------*)
+
+(* 
+Helper function for 3.6 
+
+This function recursively creates a list of n zeros
+**)
+
+let rec createZeroesList(count, size) = 
+	if (count = size) then []
+	else 0.0::createZeroesList(count+1,size);;
+						
+(*---------------------------------------------------------------------------------------------------------------------------------------------------------------*)
+
+(**
+3.6 zeroes
+
+Prototype:
+zeroes(size)
+Inputs: size
+Returned Value: list of zeroes of length size
+Side Effects: none
+Signature: val zeroes : int -> float list = <fun>
+Notes: To create a list of zeroes (0.0) of length size either c or mean vector dimension.
+*)
+
+let zeroes(size) = 
+	createZeroesList(0,size);;
+	
+(*---------------------------------------------------------------------------------------------------------------------------------------------------------------*)
+
+(* 
+Helper function for 3.7 
+
+This function recursively creates m lists of n zeros
+**)	
+
+let rec createZeroMeansSet(count,c,d) = 
+	if(count = c) then []
+	else createZeroesList(0,d)::createZeroMeansSet(count+1,c,d);;
+	
+(*---------------------------------------------------------------------------------------------------------------------------------------------------------------*)
+
+(**
+3.7 zeroMeansSet
+
+Prototype:
+zeroMeansSet(c,d)
+Inputs: c,d
+Returned Value: A list of c lists (means set) all zeros each with dim=d
+Side Effects: none
+Signature: val zeroMeansSet : int * int -> float list list = <fun>
+Notes: Creates a list of c lists (means set) all zeros and dim=d
+*)	
+
+let zeroMeansSet(c,d) =
+	createZeroMeansSet(0,c,d);;
+
+(*---------------------------------------------------------------------------------------------------------------------------------------------------------------*)
+
+(**
+3.8 zeroVdiff
+
+Prototype:
+zeroVdiff(v1,v2)
+Inputs: vectors v1 and v2
+Returned Value: true if v1 and v2 are the same,; false otherwise
+Side Effects: none
+Signature: val zeroVdiff : ’a list * ’a list -> bool = <fun>
+Notes:
+1. Used to tell when done (solution achieved) ->
+All elements of all vectors in the list of means are unchanging
+so for all vectors new class is the same as the old class.
+2. Be careful of = vs. == in ocaml.
+*)
+
+let rec zeroVdiff(v1,v2) = 
+	match (v1,v2) with
+	|(_::_,[]) -> false
+	|([],_::_) -> false
+	|([],[]) -> true;
+	|(v1Head::v1Tail, v2Head::v2Tail) -> if(v1Head = v2Head && v1Tail = []) then true
+										 else if(v1Head = v2Head) then zeroVdiff(v1Tail,v2Tail)
+										 	  else false;;
+
+(*---------------------------------------------------------------------------------------------------------------------------------------------------------------*)
+
+(**
+3.9 zeroSetDiff
+
+Prototype:
+zeroSetDiff(s1,s2)
+Inputs: list-of-lists s1 and s2
+Returned Value: true if s1 and s2 are equal; false otherwise
+Side Effects: none
+Signature: val zeroSetDiff : ’a list list * ’a list list -> bool = <fun>
+Notes: To tell if two list-of-list structures are equal
+*)
+
+let rec zeroSetDiff(s1,s2) = 
+	match (s1,s2) with
+	|(_::_,[]) -> false
+	|([],_::_) -> false
+	|([],[]) -> true
+	|(s1Head::s1Tail, s2Head::s2Tail) -> if(zeroVdiff(s1Head,s2Head) && s1Tail = [[]] && s2Tail = [[]]) then true
+										 else if(zeroVdiff(s1Head,s2Head)) then zeroSetDiff(s1Tail,s2Tail)
+									 		  else false;;
+
+(*---------------------------------------------------------------------------------------------------------------------------------------------------------------*)
+
+
+(* 
+Helper function for 3.10 
+
+This function recursively creates a list of m elements, each 0
+**)	
+
+let rec createZeroCounts(count,c) =
+	if(count = c) then []
+	else 0::createZeroCounts(count+1,c);;
+
+(*---------------------------------------------------------------------------------------------------------------------------------------------------------------*)
+
+(**
+3.10 zeroCounts
+
+Prototype:
+zeroCounts(c)
+Inputs: c
+Returned Value: list of c elements, each 0
+Side Effects: none
+Signature: val zeroCounts : int -> int list = <fun>
+Notes:
+*)
+
+let zeroCounts(c) = 
+	createZeroCounts(0,c);;
+
+(*---------------------------------------------------------------------------------------------------------------------------------------------------------------*)
+
+(* 
+Helper function for 3.11
+
+This function recursively creates a list of m elements, each 0
+**)
+
+let rec retUpdateCounts(i,p,counts) =
+	match counts with
+	|[] -> []
+	|head::tail -> if(i = p) then ((head+1)::retUpdateCounts(i+1,p,tail))
+				   else (head::retUpdateCounts(i+1,p,tail));;
+
+(*---------------------------------------------------------------------------------------------------------------------------------------------------------------*)
+
+
+(**
+3.11 updateCounts
+
+Prototype:
+updateCounts(p,counts)
+Inputs: p, counts
+Returned Value: updated counts list with element p incremented by 1
+Side Effects: none
+Signature: val updateCounts : int * int list -> int list = <fun>
+Notes: Function to keep track of # elements in a cluster.
+Records # of vectors closest to mean p as integer --
+for eventual use in computing new cluster mean.
+*)
+
+let updateCounts(p,counts) = 
+	retUpdateCounts(0,p,counts);;
+
+(*---------------------------------------------------------------------------------------------------------------------------------------------------------------*)
+
+(**
+Helper function for 4.1
+
+Recursively goes through the means set to position x and adds the vector v to the vector at x.
+*)
+
+let rec retUpdateMeansSum(i,v,x,means) =
+	match means with
+	|[] -> []
+	|head::tail -> if(i = x) then elsum(v,head)::tail
+				   else (head::retUpdateMeansSum(i+1,v,x,tail));;
+
+(*---------------------------------------------------------------------------------------------------------------------------------------------------------------*)
+
+
+(**
+4.1 updateMeansSum
+
+Prototype:
+updateMeansSum(v,x,means)
+Inputs: v,x,means (the current c cluster sums)
+Returned Value: means with v added to the vector in means at position x.
+Side Effects: none
+Signature: val updateMeansSum : float list * int * float list list -> float list list =
+<fun>
+Notes: It is not necessary to explicitly form the new cluster sets prior to forming
+their new means. Instead, simply keep a running sum of the vectors added to a cluster
+and the number of vectors in the cluster.
+This function adds a vector to a vector at index x in another set
+of vectors and is a key part of the computation.
+*)
+
+let updateMeansSum(v,x,means) = 
+	match v with
+	|[] -> means
+	|head::tail -> retUpdateMeansSum(0,v,x,means);;
+
+(*---------------------------------------------------------------------------------------------------------------------------------------------------------------*)
+
+
+(**
+4.2 formNewMeans
+
+Prototype:
+formNewMeans(newmeanssum, newcounts)
+Inputs: list of newcluster sums, list of corresponding new cluster member
+Returned Value: list of new means
+Side Effects: none
+Signature: formNewMeans : float list list * int list -> float list list =
+Notes: Function to take newmeanssum and updated counts and form new means
+Note: We do not want to update the means until all vectors in h have been
+This is done in function reclassify.
+*)	
+
+let rec formNewMeans(newmeanssum, newcounts) =
+	match (newmeanssum, newcounts) with
+	|([],[]) -> []
+	|(_,[]) -> []
+	|([],_) -> []
+	|(headNewMeans::tailNewMeans, headCounts::tailCounts) -> scaleList(headNewMeans, headCounts) :: formNewMeans(tailNewMeans, tailCounts);;
+	
+(*---------------------------------------------------------------------------------------------------------------------------------------------------------------*)
+
+(**
+Helper for 4.3
+
+This function recursively goes through each vector in current means set and new counts list and updates the means sum
+
+
+*)
+
+let rec retUpdateMeansSum(newmeans, counts, currmeans) = 
+	match (newmeans, counts) with
+	|([],[]) -> []
+	|(_,[]) -> []
+	|([],_) -> []
+	|(headMeans::tailMeans, headCounts::tailCounts) -> retUpdateMeansSum(tailMeans,tailCounts,updateMeansSum(headMeans,headCounts,currmeans));;
+		
+(*---------------------------------------------------------------------------------------------------------------------------------------------------------------*)	
+	
+
+(**
+4.3 reclassify
+
+Prototype:
+reclassify(h, currmeans, newmeanssum, newcounts)
+Inputs: h, currmeans, newmeanssum, newcounts
+Returned Value: new (updated) means from reclassification of h using current means
+Side Effects: none
+Signature: val reclassify :
+float list list * float list list * float list list * int list ->
+float list list = <fun>
+Notes/hints:
+1. The strategy is to use this function recursively to reclassify each element of H.
+(using previously developed functions updateCounts and updateMeans).
+2. Once this is done, the new or updated means are recomputed from newmeanssum and newcounts
+3. newmeanssum, newcounts in reclassify are initialized with zeroes.
+*)
+
+let rec reclassify(h, currmeans, newmeanssum, newcounts) =
+	match (h) with
+	|([]) -> formNewMeans(newmeanssum, newcounts)
+	|(headH::tailH) ->  reclassify(tailH, currmeans, retUpdateMeansSum(newmeanssum, updateCounts(listMinPos(distanceSqAllMeans(headH, currmeans)), newcounts), currmeans), updateCounts(listMinPos(distanceSqAllMeans(headH, currmeans)), newcounts));; 
+					   
+(*---------------------------------------------------------------------------------------------------------------------------------------------------------------*)
+
+(**
+4.4 cmeans
+
+Prototype:
+cmeans(c,h,mucurrent)
+Inputs: c,h,mucurrent
+Returned Value: final c-means (as a list of means lists)
+Side Effects: none
+Signature: val cmeans : int * float list list * float list list -> float list list =
+<fun>
+Notes: mucurrent starts as muzero (implies recursion).
+Stops when means not changing.
+*)
+
+let rec cmeans(c,h,mucurrent) = 
+	match mucurrent with 
+	| [] -> []
+	|head::tail -> if(zeroSetDiff(h, mucurrent) = false) 
+				   then cmeans(c,h,(reclassify(h, mucurrent, zeroMeansSet(List.length mucurrent, List.length head), zeroCounts(List.length head))))
+				   else mucurrent;;
+
+(*---------------------------------------------------------------------------------------------------------------------------------------------------------------*)
+
