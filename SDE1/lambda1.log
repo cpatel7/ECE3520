@@ -1,0 +1,123 @@
+fun100
+Parse for syntactically correct lambda-calculus expression was successful:
+The overall expression is a constant
+
+ask
+Parse for syntactically correct lambda-calculus expression was successful:
+The overall expression is a variable
+
+100
+Parse for syntactically correct lambda-calculus expression was successful:
+The overall expression is a constant
+
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasadssssssssssssssssssfdg
+Parse for syntactically correct lambda-calculus expression was successful:
+The overall expression is a variable
+
+((fun1 fun2)(fun3 fun4))
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+(lambda x . (lambda y . (lambda z . (fun0 z))))
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+(lambda x . (fun9 x))
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+
+fun9
+Parse for syntactically correct lambda-calculus expression was successful:
+The overall expression is a constant
+
+fun2100000000000000000000000000000000000000000000000004
+Parse for syntactically correct lambda-calculus expression was successful:
+The overall expression is a constant
+
+fun
+Parse for syntactically correct lambda-calculus expression was successful:
+The overall expression is a variable
+
+lambda
+Parse for syntactically correct lambda-calculus expression was successful:
+The overall expression is a variable
+
+(lambda (x . (fun9 x)))
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+(((lambda x.(lambda y.(x y))) f2) 3)
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+f2
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+Parse for syntactically correct lambda-calculus expression was successful:
+The overall expression is a constant
+
+abc123
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+Parse for syntactically correct lambda-calculus expression was successful:
+The overall expression is a constant
+
+14 fun
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+Parse for syntactically correct lambda-calculus expression was successful:
+The overall expression is a variable
+
+lambda fun
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+Parse for syntactically correct lambda-calculus expression was successful:
+The overall expression is a variable
+
+((lambda fun).
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+((lambda fun). (100))
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+(lambda fun .. 100) 
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+-100
+Sorry, Charlie: Not everybody can be a lambda expression!
+
+Parse for syntactically correct lambda-calculus expression was successful:
+The overall expression is a constant
+

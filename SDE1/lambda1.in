@@ -1,0 +1,26 @@
+%{
+	#include "lambda1.tab.h"
+%}
+
+%option nounput
+%option noinput
+
+VARIABLE [a-z]+
+CONSTANT [0-9]+|"fun"[0-9]+
+T_LAMBDA "(lambda "VARIABLE". "
+LPARENS "("
+RPARENS ")"
+E	.
+
+
+%%
+[\r\t\n]+
+
+{VARIABLE}$ return VARIABLE;
+{CONSTANT}$ return CONSTANT;
+{T_LAMBDA} return T_LAMBDA;
+{LPARENS} return LPARENS;
+{RPARENS}$ return RPARENS;
+{E} return E;
+
+%%
